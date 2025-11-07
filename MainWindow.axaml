@@ -1,0 +1,214 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d" 
+		xmlns:local="clr-namespace:Simple_Key_Remapper"
+		x:Class="Simple_Key_Remapper.MainWindow"
+		Title="Simple_Key_Remapper"
+
+		x:Name="currentWindow"
+		xmlns:utils="clr-namespace:Simple_Key_Remapper.utils"
+		x:DataType="local:MainWindow"
+
+		WindowStartupLocation="CenterScreen"
+		CanResize="True"
+		TransparencyLevelHint="Mica, Blur, Transparent"
+		TransparencyBackgroundFallback="White"
+		ExtendClientAreaToDecorationsHint="True"
+		ExtendClientAreaChromeHints="NoChrome"
+		Background="Transparent"
+
+		Height="600"
+		Width="455"
+		MaxWidth="455"
+		>
+
+	<Window.Styles>
+		<Style Selector="Button:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource SystemAccentColor}" />
+		</Style>
+		<Style Selector="ComboBox">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
+	</Window.Styles>
+
+	<Window.Resources>
+		<utils:EnumtoKeyUI x:Key="KeyUI" />
+	</Window.Resources>
+
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="45" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<!-- Barra superior -->
+		<StackPanel
+		Grid.Row="0"
+		Background="Transparent"
+		Orientation="Horizontal"
+		Spacing="6"
+		PointerPressed="titleBar_PointerPressed"
+		>
+			<PathIcon
+			Data="{StaticResource geo_settings}"
+			Margin="12,0,4,0"/>
+			<TextBlock
+			Text="{Binding Lang.AppName}"
+			FontSize="16"
+			FontWeight="Bold"
+			VerticalAlignment="Center" />
+		</StackPanel>
+
+		<!-- Botón de cierre -->
+		<Button
+		Classes="close"
+		HorizontalAlignment="Right"
+		Padding="8"
+		Margin="0,1,7,0"
+		ZIndex="10"
+		Click="close">
+			<PathIcon
+			Data="{StaticResource geo_close}"
+			Width="14"
+			Height="14" />
+		</Button>
+
+		<StackPanel
+		Grid.Row="1"
+		Margin="24,0"
+		Spacing="20"
+		HorizontalAlignment="Stretch">
+			<Separator Margin="-20,0"/>
+			<!-- Párrafo de descripción -->
+			<TextBlock
+			Text="{Binding Lang.Description}"
+			TextWrapping="Wrap"
+			Margin="0,-4,0,0"
+			Padding="0,4"
+			FontSize="15"
+			FontWeight="Regular"/>
+			<!-- Cabecera de tabla -->
+			<StackPanel
+			Background="Transparent"
+			Margin="14,0,0,12"
+			Orientation="Horizontal"
+			Spacing="51">
+				<TextBlock Text="{Binding Lang.SourceKey}" Width="130" FontWeight="Medium"/>
+				<TextBlock Text="{Binding Lang.TargetKey}" Width="130" FontWeight="Medium"/>
+			</StackPanel>
+		</StackPanel>
+
+
+		<!-- Fila 3: espacio scrollable + botón fijo -->
+		<Grid
+		Grid.Row="2"
+		Margin="24,0"
+		RowDefinitions="*, auto"
+		RowSpacing="8"
+		ClipToBounds="True">
+			<!-- Tabla de mapeo scrollable -->
+			<ScrollViewer
+			Grid.Row="0"
+			x:Name="MyScroll"
+			VerticalScrollBarVisibility="Auto"
+			ClipToBounds="True">
+				<!-- Items -->
+				<ItemsControl
+				ItemsSource="{Binding KeyRemaps}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Spacing="4"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Border
+							BorderThickness="1"
+							BorderBrush="{DynamicResource SystemBaseMediumLowColor}"
+							Padding="14,12"
+							CornerRadius="8">
+								<StackPanel
+								Orientation="Horizontal"
+								Spacing="5">
+									<ComboBox
+									ItemsSource="{Binding AllKeys, ElementName=currentWindow}"
+									SelectedItem="{Binding Origin, Mode=TwoWay}"
+									SelectionChanged="ComboBoxOrigen_SelectionChanging"
+									IsTextSearchEnabled="True"
+									Width="140"
+									MaxDropDownHeight="220">
+										<ComboBox.ItemTemplate>
+											<DataTemplate>
+												<TextBlock Text="{Binding Converter={StaticResource KeyUI}}"/>
+											</DataTemplate>
+										</ComboBox.ItemTemplate>
+									</ComboBox>
+									<TextBlock Text=" → " Margin="5"/>
+									<ComboBox
+									ItemsSource="{Binding AllKeys, ElementName=currentWindow}"
+									SelectedItem="{Binding Target, Mode=TwoWay}"
+									Width="140"
+									MaxDropDownHeight="220">
+										<ComboBox.ItemTemplate>
+											<DataTemplate>
+												<TextBlock Text="{Binding Converter={StaticResource KeyUI}}"/>
+											</DataTemplate>
+										</ComboBox.ItemTemplate>
+									</ComboBox>
+									<!-- Botón delete custom key 🗑️ -->
+									<Button
+									Command="{Binding RemoveRemapCommand, ElementName=currentWindow}"
+									CommandParameter="{Binding}"
+									Margin="17,0,0,0"
+									Padding="5"
+									Background="Transparent">
+										<Button.Styles>
+											<Style Selector="Button:pointerover PathIcon">
+												<Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}"/>
+											</Style>
+											<Style Selector="Button:pointerover /template/ ContentPresenter">
+												<Setter Property="Background" Value="Transparent"/>
+											</Style>
+										</Button.Styles>
+										<PathIcon Data="{StaticResource geo_delete}"/>
+									</Button>
+								</StackPanel>
+							</Border>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</ScrollViewer>
+			<Button
+			Grid.Row="1"
+			Content="{Binding Lang.AddNewRemap}"
+			Height="30"
+			Padding="12,5"
+			VerticalAlignment="Top"
+			HorizontalContentAlignment="Center"
+			Click="addRemap_Click"/>
+		</Grid>
+
+
+		<StackPanel
+		Grid.Row="3"
+		Margin="20,15,20,14"
+		Orientation="Horizontal"
+		HorizontalAlignment="Right"
+		Spacing="8">
+			<Button
+			Content="{Binding Lang.Ok}"
+			Width="100"
+			HorizontalContentAlignment="Center"
+			Click="ok_Click"/>
+		</StackPanel>
+	</Grid>
+</Window>
