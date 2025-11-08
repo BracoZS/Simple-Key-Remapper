@@ -19,6 +19,9 @@
 - Configuración rápida sin complicaciones.
 - Permite iniciarse automáticamente con el sistema.
 
+## Descargas
+➡️ [Releases](https://github.com/BracoZS/Simple-Key-Remapper/releases)
+
 ## 🚀 Uso
 1. Abre el programa.  
 2. Haz clic derecho en el ícono en la bandeja, selecciona **Abrir reasignaciones**.  
