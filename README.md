@@ -1,7 +1,7 @@
 # Simple Key Remapper
 <img width="128" height="128" alt="appicon" src="https://github.com/user-attachments/assets/dfeae131-9840-42b0-8802-d74b44147b6a" />
 
-# Capturas de pantalla
+## Capturas de pantalla
 <img width="455" height="595" alt="Captura de pantalla 2025-11-07 192313" src="https://github.com/user-attachments/assets/d83aa8d9-fb7e-4160-a30b-34dbd53c5e00" />
 
 
